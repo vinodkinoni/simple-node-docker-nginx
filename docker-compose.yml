@@ -1,9 +1,12 @@
 version: '3.8'
 services:
-  backend:
+  server:
     image: node:12-alpine
     ports:
       - '8080:80'
+    env_file:
+      - ./deploy/backend.env
+    entrypoint: sh /root/backend/start_backend.sh
   frontend:
     build:
       context: ./deploy
@@ -11,5 +14,8 @@ services:
     ports:
       - '80:80'
       - '443:443'
+    volumes:
+      - ./frontend/build:/var/www/html
+      - ./deploy/default.conf:/etc/nginx/sites-available/default
     depends_on:
       - backend
